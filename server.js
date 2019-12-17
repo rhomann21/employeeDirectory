@@ -70,14 +70,14 @@ function start() {
         break;  
 
       case "Exit":
-        exitApp();
+        connection.end();
         break;  
 
       }
     });
 };
 
-
+//View employyes
 function viewEmployee() {
   var query = "SELECT * FROM employee";
   connection.query(query, (err, res) => {
@@ -89,7 +89,7 @@ function viewEmployee() {
   });
 };
 
-
+//view dapartments
 function viewDepartment() {
   var query = "SELECT * FROM department";
   connection.query(query, (err, res) => {
@@ -101,9 +101,9 @@ function viewDepartment() {
   });
 };
 
-
+//view roles
 function viewRole() {
-  var query = "SELECT * FROM role";
+  var query = "SELECT * FROM employee_role";
   connection.query(query, (err, res) => {
   if (err) throw err;
   for (var i = 0; i < res.length; i++) {
@@ -113,6 +113,116 @@ function viewRole() {
   });
 };
 
+
+function addEmployee() {
+  inquirer.prompt([
+      {
+          type: "input",
+          name: "first",
+          message: "Enter Employee First Name: ",
+      },
+      {
+          type: "input",
+          name: "last",
+          message: "Enter Employee Last Name: ",
+      },
+      {
+          type: "input",
+          name: "id",
+          message: "Enter Employee's ID': ",
+      },
+      {
+          type: "input",
+          name: "role",
+          message: "Enter Employee's Role ID: ",
+      },
+      {
+          type: "input",
+          name: "manager",
+          message: "Enter Employee's Manager ID: ",
+      },
+  ]).then(answer => {
+
+      connection.query(
+          "INSERT INTO employee SET ?",
+          {
+              id: answer.id,
+              first_name: answer.first,
+              last_name: answer.last,
+              role_id: answer.role,
+              manager_id: answer.manager
+
+          }, function (err, res) {
+              if (err) throw err;
+              console.log('Employee Added!');
+              start();
+          });
+  });
+};
+
+function addDepartment() {
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "name",
+          message: "What is the name of the new department?"
+        }
+      ])
+      .then(function(answer) {
+        connection.query(
+          "INSERT INTO department SET ?",
+          {
+            dept_name: answer.name
+          },
+          function(err) {
+            if (err) throw err;
+            console.log("Department added successfully!");
+            start();
+          }
+        );
+      });
+  };
+
+function addRole() {
+  inquirer.prompt([
+      {
+          type: "input",
+          name: "title",
+          message: "Enter employee's name: ",
+      },
+      {
+          type: "input",
+          name: "deptID",
+          message: "Enter employee's department ID: ",
+      },
+      {
+          type: "input",
+          name: "id",
+          message: "Enter employee's ID: ",
+      },
+      {
+          type: "input",
+          name: "salary",
+          message: "Enter employee's salary",
+      },
+  ]).then(answer => {
+      connection.query(
+          "INSERT INTO employee_role SET ?",
+          {
+              title: answer.title,
+              id: answer.id,
+              department_id: answer.deptID,
+              salary: answer.salary
+
+          }, function (err, res) {
+              if (err) throw err;
+              console.log("Employee Role Added!");
+          });
+          start();
+
+  });
+};
 
 
 
