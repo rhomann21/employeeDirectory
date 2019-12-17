@@ -15,7 +15,7 @@ var connection = mysql.createConnection({
   database: "employee_db"
 });
 
-connection.connect(function(err) {
+connection.connect(function(err) { 
   if (err) throw err;
  // console.log("connected as id " + connection.threadId);
   start();
@@ -28,9 +28,14 @@ function start() {
       type: "rawlist",
       message: "What would you like to do? Use arrow keys to select.",
       choices: [
-        "View department",
-        "View role",
-        "View employee",
+        "View all employees",
+        "View departments",
+        "View roles",
+        "Add employee",
+        "Add role",
+        "Update employee role",
+        "Add department",
+        "Exit"
       ]
     })
     .then(function(answer) {
@@ -47,52 +52,66 @@ function start() {
       case "View employee":
         viewEmployee();
         break;
+
+      case "Add employee":
+        addEmployee();
+        break;      
       
+      case "Add role":
+        addRole();
+        break;            
+      
+      case "Update employee role":
+        updateRole();
+        break;      
+        
+      case "Add department":
+        addDepartment();
+        break;  
+
+      case "Exit":
+        exitApp();
+        break;  
+
       }
     });
 };
 
 
 function viewEmployee() {
-  connection.query("SELECT * FROM employee", function(err, res) {
-    console.log(res);
-    console.log("--------------------");
+  var query = "SELECT * FROM employee";
+  connection.query(query, (err, res) => {
+    if (err) throw err;
+    for (var i = 0; i < res.length; i++) {
+      console.log(`Name: ${res[i].first_name} ${res[i].last_name}`);
+    }
+    start();
   });
 };
+
 
 function viewDepartment() {
-  connection.query("SELECT * FROM department", function(err, res) {
-    console.log(res);
-    console.log("--------------------");
+  var query = "SELECT * FROM department";
+  connection.query(query, (err, res) => {
+  if (err) throw err;
+  for (var i = 0; i < res.length; i++) {
+    console.log(`Department: ${res[i].dept_name}`);
+  }
+  start();
   });
 };
+
 
 function viewRole() {
-  connection.query("SELECT * FROM employee_role", function(err, res) {
-    console.log(res);
-    console.log("--------------------");
+  var query = "SELECT * FROM role";
+  connection.query(query, (err, res) => {
+  if (err) throw err;
+  for (var i = 0; i < res.length; i++) {
+    console.log(`Role: ${res[i].title}  ||  Salary: $${res[i].salary}`)
+  }
+  start();
   });
 };
-
-
-// function loadPrompts() {
-//    view employees
- //   viewemployees by depart
-
- //function viewEmployees
- //select * from employees , all employees=>
- //cxocnsole.log employees
- //loadpromtps()
-
- //function add employee() {
-//findAllRoles.then() {
-    //const roleid - inquirer prompt;
-    //findAllEmployees.then() {
-     //   const managerid = prompt
-  //   query to add employee to table
-  //  }
-//}
- //}
 
 
 
